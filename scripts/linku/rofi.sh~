@@ -1,0 +1,2 @@
+#!/bin/bash
+cat data.json | jq '.data | .[keys[]] | [.word, .sitelen_emosi, .def.en] | @tsv' | rofi -dmenu
