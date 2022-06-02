@@ -13,11 +13,14 @@ set $mod Mod4
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-font pango:monospace 8
+font pango:Fira Code 10
 
-# This font is widely installed, provides lots of unicode glyphs, right-to-left
-# text rendering and scalability on retina/hidpi displays (thanks to pango).
-#font pango:DejaVu Sans Mono 8
+for_window [class=".*"] border pixel 0
+gaps inner 10
+gaps outer 16
+
+# compositor!
+exec --no-startup-id picom -Cc -f -o 1 -r 40 -b
 
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
 # they are included here as an example. Modify as you see fit.
@@ -47,12 +50,15 @@ bindsym $mod+Return exec i3-sensible-terminal
 bindsym $mod+Shift+q kill
 
 # start dmenu (a program launcher)
-bindsym $mod+d exec --no-startup-id dmenu_run
-# A more modern dmenu replacement is rofi:
-# bindcode $mod+40 exec "rofi -modi drun,run -show drun"
-# There also is i3-dmenu-desktop which only displays applications shipping a
-# .desktop file. It is a wrapper around dmenu, so you need that installed.
-# bindcode $mod+40 exec --no-startup-id i3-dmenu-desktop
+#bindsym $mod+d exec --no-startup-id dmenu_run
+bindsym $mod+d exec rofi -modi 'drun#run' -show drun -show-icons
+bindsym Mod1+Tab exec rofi -modi 'window#windowcd' -show window -show-icons
+bindsym $mod+Control+semicolon exec /home/tyler/packages/rofimoji/env/bin/rofimoji
+bindsym $mod+t exec /home/tyler/dotfiles/scripts/linku/rofi.sh
+
+# brightness stuff
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set 5%+
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
 
 # change focus
 bindsym $mod+j focus left
@@ -141,6 +147,9 @@ bindsym $mod+Shift+8 move container to workspace number $ws8
 bindsym $mod+Shift+9 move container to workspace number $ws9
 bindsym $mod+Shift+0 move container to workspace number $ws10
 
+# screenshot!
+bindsym Print exec scrot -e 'xclip -selection clipboard -t image/png -i $f'
+
 # reload the configuration file
 bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
@@ -178,5 +187,16 @@ bindsym $mod+r mode "resize"
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
 bar {
+	mode hide
+	hidden_state hide
+	modifier $mod
+	tray_output primary
+	i3bar_command i3bar --transparency
         status_command i3status
+	font pango:Fira Code 12
+	colors {
+	       background #0e0e3cbb
+	       statusline #ebcfb0ff
+	       separator #b7b7b7ff
+	}
 }
