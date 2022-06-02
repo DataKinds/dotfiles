@@ -15,8 +15,15 @@ set $mod Mod4
 # is used in the bar {} block below.
 font pango:Fira Code 10
 
-for_window [class=".*"] border pixel 0
+for_window [class=".*"] border normal 0
 gaps inner 10
+gaps outer 16
+
+# compositor!
+exec --no-startup-id picom -Cc -f -o 1 -r 40 -b
+
+# background
+exec --no-startup-id feh --bg-fill /home/tyler/Pictures/wallpapers/4907599.jpg
 
 # The combination of xss-lock, nm-applet and pactl is a popular choice, so
 # they are included here as an example. Modify as you see fit.
@@ -51,6 +58,10 @@ bindsym $mod+d exec rofi -modi 'drun#run' -show drun -show-icons
 bindsym Mod1+Tab exec rofi -modi 'window#windowcd' -show window -show-icons
 bindsym $mod+Control+semicolon exec /home/tyler/packages/rofimoji/env/bin/rofimoji
 bindsym $mod+t exec /home/tyler/dotfiles/scripts/linku/rofi.sh
+
+# brightness stuff
+bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set 5%+
+bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 5%-
 
 # change focus
 bindsym $mod+j focus left
@@ -187,7 +198,7 @@ bar {
         status_command i3status
 	font pango:Fira Code 12
 	colors {
-	       background #0e0e3cff
+	       background #0e0e3cbb
 	       statusline #ebcfb0ff
 	       separator #b7b7b7ff
 	}
