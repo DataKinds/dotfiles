@@ -1,9 +1,9 @@
 configuration {
 /*	modi: "window,run,ssh";*/
-/*	width: 50;*/
+/*	width: 100; */
 /*	lines: 15;*/
 /*	columns: 1;*/
-/*	font: "mono 12";*/
+	font: "mono 11";
 /*	bw: 1;*/
 /*	location: 0;*/
 /*	padding: 5;*/
@@ -47,7 +47,7 @@ configuration {
 /*	hide-scrollbar: false;*/
 /*	fullscreen: false;*/
 /*	fake-transparency: false;*/
-/*	dpi: -1;*/
+	dpi: 250;
 /*	threads: 0;*/
 /*	scrollbar-width: 8;*/
 /*	scroll-method: 0;*/
@@ -150,3 +150,7 @@ configuration {
 /*	me-accept-entry: "MouseDPrimary";*/
 /*	me-accept-custom: "Control+MouseDPrimary";*/
 }
+/* @theme "arthur" */
+
+
+@theme "./sidebar"
