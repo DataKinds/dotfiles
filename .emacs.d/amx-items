@@ -1,0 +1,58 @@
+
+;; ----- amx-history -----
+(
+ undo-tree-visualize
+ scratch-buffer
+ undo-tree-undo
+ ido-find-file
+ company-indent-or-complete-common
+ indent-according-to-mode
+ customize-variable
+)
+
+;; ----- amx-data -----
+(
+ (amx-mode . 1)
+ (execute-extended-command . 1)
+ (swiper . 2)
+ (indent-region . 1)
+ (mc/mark-all-in-region . 1)
+ (repeat-complex-command . 1)
+ (find-function . 2)
+ (load-theme . 13)
+ (counsel-faces . 1)
+ (help-quit . 1)
+ (view-lossage . 1)
+ (apropos-variable . 1)
+ (ivy-mode . 1)
+ (theme-choose-variant . 3)
+ (disable-theme . 5)
+ (enable-theme . 1)
+ (describe-theme . 1)
+ (set-variable . 1)
+ (global-display-line-numbers-mode . 3)
+ (global-so-long-mode . 1)
+ (global-tab-line-mode . 2)
+ (toggle-frame-tab-bar . 1)
+ (tab-switch . 1)
+ (datakinds/open-init-file . 1)
+ (customize-group . 1)
+ (lsp-install-server . 1)
+ (tree-sitter-debug-mode . 3)
+ (zig-mode . 1)
+ (tree-sitter-hl-mode . 3)
+ (describe-keymap . 1)
+ (swiper-multi . 1)
+ (swiper-mc . 1)
+ (swiper-avy . 1)
+ (set-mark-command . 1)
+ (swiper-all . 1)
+ (indent-for-tab-command . 1)
+ (customize-variable . 3)
+ (indent-according-to-mode . 1)
+ (company-indent-or-complete-common . 1)
+ (ido-find-file . 1)
+ (undo-tree-undo . 1)
+ (scratch-buffer . 1)
+ (undo-tree-visualize . 2)
+)
