@@ -1,0 +1,39 @@
+* No Tab
+** gcs
+ - path :: ~/firefly/gcs/gcs
+* Tab  *Treemacs-Scoped-Buffer-No Tab*
+** flight_review
+ - path :: ~/firefly/flight_review
+* Tab *scratch*
+** dashboard
+ - path :: ~/firefly/dashboard
+* Tab nil
+** flight_review
+ - path :: ~/firefly/flight_review
+* Tab *flight_review-eshell*
+** flight_review
+ - path :: ~/firefly/flight_review
+* Tab  *Treemacs-Scoped-Buffer-Tab *flight_review-eshell**
+** flight_review
+ - path :: ~/firefly/flight_review
+* Tab  *Treemacs-Scoped-Buffer-Tab nil*
+** flight_review
+ - path :: ~/firefly/flight_review
+* Tab *Help*
+** flight_review
+ - path :: ~/firefly/flight_review
+* Tab configured_plots.py
+** flight_review
+ - path :: ~/firefly/flight_review
+* Tab init.el
+** dashboard
+ - path :: ~/firefly/dashboard
+* Tab datakinds.el
+** elisp
+ - path :: ~/.emacs.d/elisp
+* Tab app.py
+** dashboard
+ - path :: ~/firefly/dashboard
+* Tab  *Treemacs-Scoped-Buffer-Tab app.py*
+** dashboard
+ - path :: ~/firefly/dashboard

@@ -1,3 +1,6 @@
 ;;; -*- lisp-data -*-
-(("~/firefly/dashboard/")
+(("~/firefly/gcs/gcs/")
+ ("~/firefly/dashboard/")
+ ("~/firefly/internal-gitbook/")
+ ("~/firefly/flight_review/")
  ("~/personal-projects/aoc2022/"))

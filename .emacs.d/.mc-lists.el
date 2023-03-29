@@ -3,13 +3,16 @@
 
 (setq mc/cmds-to-run-for-all
       '(
-	forward-sexp
-	indent-for-tab-command
-	mouse-minor-mode-menu
-	))
+        forward-sexp
+        ignore-preserving-kill-region
+        indent-for-tab-command
+        mouse-minor-mode-menu
+        ))
 
 (setq mc/cmds-to-run-once
       '(
-	ignore
-	undo-redo
-	))
+        ignore
+        keyboard-escape-quit
+        lsp-ui-doc--handle-mouse-movement
+        undo-redo
+        ))

@@ -1,0 +1,12 @@
+ls
+cd appls
+cd pap
+cd app
+ls
+cd ..
+ls
+cat README.md 
+cd app
+. env/bin/activate
+source env/bin/activate
+./serve.py --show
