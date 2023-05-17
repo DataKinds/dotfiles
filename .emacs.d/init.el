@@ -9,13 +9,16 @@
 (require 'datakinds)
 
 ;; Open this file on C-x C-<return>
-(global-set-key (kbd "C-x C-<return>") 'datakinds/open-init-file)
+(global-set-key (kbd "C-x C-<return>") 'dk/open-init-file)
 
 ;; Line numbers in prog-mode
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
 ;; Show the tab bar if more than one tab exists
 (setq tab-bar-show 1)
+
+;; Hide the toolbar
+(tool-bar-mode 0)
 
 ;; Debug on freeze!
 ;; To debug emacs, run `kill -SIGUSR2 <emacs PID>`
@@ -28,7 +31,7 @@
                                     (if truncate-lines (scroll-left 1))))
 
 ;; She may contain the urge to get away...
-;; (global-set-key (kbd "M-j") 'datakinds/alt-j)
+;; (global-set-key (kbd "M-j") 'dk/alt-j)
 
 ;; Reload files when changed on disk
 (global-auto-revert-mode 1)
@@ -38,7 +41,14 @@
 (global-set-key (kbd "C-d") 'ctl-d-map)
 
 ;; Duplicate line on C-d C-d
-(global-set-key (kbd "C-d C-d") 'datakinds/duplicate-line)
+(global-set-key (kbd "C-d C-d") 'dk/duplicate-line)
+
+;; Unbind (suspend-frame), which crashes Emacs under i3 lol
+(global-unset-key (kbd "C-z"))
+(global-unset-key (kbd "C-x C-z"))
+
+;; It's useful!
+(global-set-key (kbd "C-c C-e") 'sgml-close-tag)
 
 ;; Install use-package if it's missing
 (if (not (package-installed-p 'use-package))
@@ -47,6 +57,7 @@
     (package-install 'use-package)))
 (require 'use-package-ensure)
 (setq use-package-always-ensure t)
+(setq use-package-always-demand (daemonp))
 
 ;; Enable packages!
 
@@ -64,11 +75,13 @@
 (use-package dashboard
   :ensure t
   :config
-  (setq dashboard-startup-banner 'logo)
-  (setq dashboard-items '((recents  . 5)
-                          (bookmarks . 5)
-                          (projects . 5)
-                          (registers . 5)))
+  (setq
+   dashboard-projects-backend 'project-el
+   dashboard-startup-banner 'logo
+   dashboard-items '((recents  . 15)
+                     ;; (bookmarks . 5)
+                     (projects . 5)
+                     (registers . 5)))
   (dashboard-setup-startup-hook))
 
 ;; Navigation and basic editing
@@ -84,7 +97,7 @@
 	     ("<return>" . nil)))
 (use-package expand-region
   :bind (("C-_" . er/contract-region)
-	 ("C-+" . er/expand-region)))
+	     ("C-+" . er/expand-region)))
 (use-package move-text
   :config
   (move-text-default-bindings))
@@ -92,11 +105,11 @@
   :bind (("C-S-o" . ace-window)))
 (use-package magit
   :bind (("C-c g" . magit-file-dispatch)))
+(use-package undo-tree
+  :config (global-undo-tree-mode))
 
 ;; QoL packages
 (use-package counsel ;; Also installs Ivy and Swiper
-  :defer f
-  :demand
   ;; Recommended Ivy keybindings to standard commands
   ;; https://oremacs.com/swiper/#global-key-bindings
   :bind (("C-s" . swiper-isearch)
@@ -122,7 +135,7 @@
 	     ("C-c j" . counsel-fzf)
 	     ("C-c J" . counsel-file-jump)
 	     ("C-c w" . counsel-wmctrl)
-	     ("C-c C-r" . ivy-resume)
+	     ("C-c M-p" . ivy-resume)
 	     ("<f6>" . ivy-resume)
 	     ("C-c b" . counsel-bookmark)
 	     ("C-c d" . counsel-descbinds)
@@ -181,27 +194,16 @@
 (use-package company-box ;; Prettier autocomplete under GTK
   :after (company)
   :hook (company-mode . company-box-mode))
-(use-package lsp-mode
-  :demand
-  :after (pyvenv)
-  :init
-  (setq lsp-keymap-prefix "C-'")
-  :hook ((python-mode . lsp)
-	     (lsp-mode . lsp-enable-which-key-integration)
-         (pyvenv-post-activate . lsp-restart-workspace)))
-(use-package lsp-ivy)
-(use-package lsp-ui)
-(use-package lsp-treemacs
-  :after (lsp-mode treemacs)
-  :config (lsp-treemacs-sync-mode 1))
 (use-package flycheck
   :config (global-flycheck-mode))
 (use-package pyvenv
-  :demand
-  :hook ((pyvenv-post-activate . pyvenv-restart-python))
-  :config
-  (pyvenv-mode 1))
+  :hook (pyvenv-post-activate . eglot)
+  :init
+  (add-hook 'python-mode-hook (lambda () (pyvenv-activate "./env/"))))
+(use-package eglot)
 (use-package vterm)
+
+
 
 ;; Syntax highlighting
 (use-package tree-sitter
@@ -225,3 +227,5 @@
   "Toggle Raven mode. Makes Ivy less lonely."
   :init-value nil
   :lighter " raven")
+(put 'scroll-left 'disabled nil)
+(put 'downcase-region 'disabled nil)
