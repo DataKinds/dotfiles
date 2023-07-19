@@ -62,8 +62,9 @@ end
 case ARGV.first
 when 'pull'
   RELATIVE_GLOBS.each do |rel|
-    Dir.glob(rel.expand_path BASE_FOLDER) do |a_path|
+    Dir.glob(rel.expand_path(BASE_FOLDER), File::FNM_DOTMATCH).each do |a_path|
       a_path = Pathname a_path
+      next if a_path.directory? # . and .. get matched with FNM_DOTMATCH
       if IGNORE_GLOBS.map{|ig| a_path.fnmatch ig}.any?
         puts "skipping #{a_path}"
         next
