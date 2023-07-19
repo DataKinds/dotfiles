@@ -3,16 +3,20 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        company-indent-or-complete-common
         forward-sexp
         ignore-preserving-kill-region
         indent-for-tab-command
         mouse-minor-mode-menu
+        yaml-electric-backspace
         ))
 
 (setq mc/cmds-to-run-once
       '(
+        dk/duplicate-line
         ignore
         keyboard-escape-quit
         lsp-ui-doc--handle-mouse-movement
+        mouse-set-region
         undo-redo
         ))

@@ -41,7 +41,9 @@
 (global-set-key (kbd "C-d") 'ctl-d-map)
 
 ;; Duplicate line on C-d C-d
-(global-set-key (kbd "C-d C-d") 'dk/duplicate-line)
+;; (global-set-key (kbd "C-d C-d") 'dk/duplicate-line)
+(use-package duplicate-thing
+  :bind (("C-d C-d" . duplicate-thing)))
 
 ;; Unbind (suspend-frame), which crashes Emacs under i3 lol
 (global-unset-key (kbd "C-z"))
@@ -49,6 +51,8 @@
 
 ;; It's useful!
 (global-set-key (kbd "C-c C-e") 'sgml-close-tag)
+
+(global-set-key (kbd "C-S-b") 'ivy-switch-buffer)
 
 ;; Install use-package if it's missing
 (if (not (package-installed-p 'use-package))
@@ -83,6 +87,10 @@
                      (projects . 5)
                      (registers . 5)))
   (dashboard-setup-startup-hook))
+(use-package highlight-indent-guides
+  :hook ((yaml-mode . highlight-indent-guides-mode)
+         (prog-mode . highlight-indent-guides-mode)))
+
 
 ;; Navigation and basic editing
 (use-package minimap
@@ -194,8 +202,6 @@
 (use-package company-box ;; Prettier autocomplete under GTK
   :after (company)
   :hook (company-mode . company-box-mode))
-(use-package flycheck
-  :config (global-flycheck-mode))
 (use-package pyvenv
   :hook (pyvenv-post-activate . eglot)
   :init
@@ -213,6 +219,10 @@
 (use-package tree-sitter-langs
   :after (tree-sitter)
   :hook (tree-sitter-after-on . tree-sitter-hl-mode))
+
+
+;; Fun packages
+(use-package elfeed)
 
 ;; Forward all M-x customize-* configuration to custom.el
 (setq custom-file "~/.emacs.d/custom.el")
