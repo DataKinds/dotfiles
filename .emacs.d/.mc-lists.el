@@ -3,20 +3,33 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        comment-dwim
         company-indent-or-complete-common
+        electric-pair-delete-pair
+        evil-backward-char
+        evil-forward-char
         forward-sexp
         ignore-preserving-kill-region
         indent-for-tab-command
+        kill-region
+        markdown-outdent-or-delete
         mouse-minor-mode-menu
         yaml-electric-backspace
+        yaml-electric-dash-and-dot
         ))
 
 (setq mc/cmds-to-run-once
       '(
+        ace-window
+        counsel-M-x
         dk/duplicate-line
+        evil-insert
         ignore
         keyboard-escape-quit
+        kmacro-end-or-call-macro
         lsp-ui-doc--handle-mouse-movement
+        mode-line-minor-mode-help
         mouse-set-region
+        swiper-isearch
         undo-redo
         ))

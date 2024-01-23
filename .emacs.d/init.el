@@ -17,8 +17,18 @@
 ;; Show the tab bar if more than one tab exists
 (setq tab-bar-show 1)
 
+;; Fast scrolling
+(setq fast-but-imprecise-scrolling t)
+
 ;; Hide the toolbar
 (tool-bar-mode 0)
+
+;; Replace the default dired insert command
+(with-eval-after-load "dired"
+  (define-key dired-mode-map "i" 'dired-subtree-insert)
+  (define-key dired-mode-map ";" 'dired-subtree-remove)
+  (all-the-icons-dired-mode)
+  (require 'dired-x)) ;; For omit mode!
 
 ;; Debug on freeze!
 ;; To debug emacs, run `kill -SIGUSR2 <emacs PID>`
@@ -43,7 +53,7 @@
 ;; Duplicate line on C-d C-d
 ;; (global-set-key (kbd "C-d C-d") 'dk/duplicate-line)
 (use-package duplicate-thing
-  :bind (("C-d C-d" . duplicate-thing)))
+  :bind (("M-S-<down>" . duplicate-thing)))
 
 ;; Unbind (suspend-frame), which crashes Emacs under i3 lol
 (global-unset-key (kbd "C-z"))
@@ -51,8 +61,9 @@
 
 ;; It's useful!
 (global-set-key (kbd "C-c C-e") 'sgml-close-tag)
-
 (global-set-key (kbd "C-S-b") 'ivy-switch-buffer)
+(global-set-key (kbd "C-x x r") 'rename-visited-file)
+
 
 ;; Install use-package if it's missing
 (if (not (package-installed-p 'use-package))
@@ -64,6 +75,19 @@
 (setq use-package-always-demand (daemonp))
 
 ;; Enable packages!
+;; Everything that comes with emacs
+(use-package emacs
+  :init
+  (setq completion-cycle-threshold 1)
+  (electric-pair-mode)
+  (setq tab-always-indent 'complete)
+  (pixel-scroll-precision-mode)
+  (setq jit-lock-defer-time 0.25))
+(use-package org
+  :bind
+  (:map org-mode-map
+        ("C-c C-M-l" . org-store-link)))
+(use-package org)
 
 ;; Theming and graphical packages
 (use-package solarized-theme ;; Pretty colors
@@ -73,9 +97,9 @@
 (use-package solaire-mode
   :config
   (solaire-global-mode +1))
-(use-package beacon
-  :config
-  (beacon-mode 1))
+;; (use-package beacon
+;;   :config
+;;   (beacon-mode 1))
 (use-package dashboard
   :ensure t
   :config
@@ -88,16 +112,29 @@
                      (registers . 5)))
   (dashboard-setup-startup-hook))
 (use-package highlight-indent-guides
+  :config
+  (setq highlight-indent-guides-method 'column)
+  :init
+;;  (add-hook 'haskell-mode-hook #'(highlight-indent-guides-mode 0))
   :hook ((yaml-mode . highlight-indent-guides-mode)
          (prog-mode . highlight-indent-guides-mode)))
 
 
+;; Window nav
+(use-package ace-window
+  :bind (("C-S-o" . (lambda () (interactive)
+                      (ace-window 0)
+                      (golden-ratio)))))
+(use-package golden-ratio
+  :init
+  (golden-ratio-mode 1))
+
 ;; Navigation and basic editing
-(use-package minimap
-  :bind (("C-c m m" . minimap-mode)
-         ("C-c m k" . minimap-kill)))
+;(use-package minimap
+;  :bind (("C-c m m" . minimap-mode)
+;         ("C-c m k" . minimap-kill)))
 (use-package multiple-cursors
-  :bind (("C-d d" . mc/mark-next-like-this-symbol)
+  :bind (("C-d C-d" . mc/mark-next-like-this-symbol)
 	     ("C-d g" . mc/edit-lines)
 	     ("C-d <return>" . mc/mark-more-like-this-extended)
 	     :map mc/keymap
@@ -109,8 +146,6 @@
 (use-package move-text
   :config
   (move-text-default-bindings))
-(use-package ace-window
-  :bind (("C-S-o" . ace-window)))
 (use-package magit
   :bind (("C-c g" . magit-file-dispatch)))
 (use-package undo-tree
@@ -150,14 +185,22 @@
 	     ;; ("C-c o" . counsel-outline)
 	     ("C-c t" . counsel-load-theme)
 	     ("C-c F" . counsel-org-file))
-  :config
+  :init
   (setq ivy-use-virtual-buffers t)
   (setq enable-recursive-minibuffers t) ;; Fix a bug with Treemacs crashing emacs on rename
   (ivy-mode 1))
+(use-package marginalia
+  :bind (:map minibuffer-local-map
+              ("M-A" . marginalia-cycle))
+  :init
+  (marginalia-mode))
 (use-package which-key
   :config (which-key-mode))
 (use-package avy
   :bind (("M-SPC" . avy-goto-char-timer)))
+(use-package breadcrumb
+  :config
+  (breadcrumb-mode))
 
 ;; Sidebar shtuff
 ;; Treemacs and its infinite config
@@ -189,19 +232,63 @@
 (use-package all-the-icons-dired
   :after all-the-icons
   :hook (dired-mode . all-the-icons-dired-mode))
-  
 
 ;; Extra language modes
 (use-package zig-mode)
+(use-package haskell-mode)
+(use-package bqn-mode
+  :bind (:map bqn-mode-map
+              ("C-c C-e" . bqn-comint-send-buffer)
+              ("C-x C-e" . bqn-comint-send-region))
+  :hook (bqn-mode . bqn-comint-buffer)
+  :config
+  (require 'bqn-keymap-mode)
+  (require 'bqn-glyph-mode))
+;; (add-to-list 'load-path "~/personal-projects/haskell-mode/")
+;; (require 'haskell-mode-autoloads)
+;; (add-to-list 'Info-default-directory-list "~/personal-projects/haskell-mode/")
 
-;; Autocomplete and LSP stuff
-(use-package company
-  :bind (("C-i" . company-complete)
-         ("TAB" . company-indent-or-complete-common))
-  :config (global-company-mode))
-(use-package company-box ;; Prettier autocomplete under GTK
-  :after (company)
-  :hook (company-mode . company-box-mode))
+;; Autocomplete
+(use-package corfu
+  ;; Optional customizations
+  ;; :custom
+  :custom
+  (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+  (corfu-auto nil)                 ;; Enable auto completion
+  ;; (corfu-separator ?\s)          ;; Orderless field separator
+  ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
+  ;; (corfu-quit-no-match nil)      ;; Never quit, even if there is no match
+  ;; (corfu-preview-current nil)    ;; Disable current candidate preview
+  (corfu-preselect 'prompt)      ;; Preselect the prompt
+  ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
+  ;; (corfu-scroll-margin 5)        ;; Use scroll margin
+
+  ;; Enable Corfu only for certain modes.
+  ;; :hook ((prog-mode . corfu-mode)
+  ;;        (shell-mode . corfu-mode)
+  ;;        (eshell-mode . corfu-mode))
+
+  ;; Recommended: Enable Corfu globally.
+  ;; This is recommended since Dabbrev can be used globally (M-/).
+  ;; See also `global-corfu-modes'.
+  ;; Use TAB for cycling, default is `corfu-complete'.
+  :bind
+  (:map corfu-map
+        ("TAB" . corfu-next)
+        ([tab] . corfu-next)
+        ("S-TAB" . corfu-previous)
+        ([backtab] . corfu-previous))
+  :init
+  (global-corfu-mode))
+(use-package cape
+  :init
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-abbrev)
+  (add-to-list 'completion-at-point-functions #'cape-keyword)
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-elisp-block))
+
+;; LSP Stuff
 (use-package pyvenv
   :hook (pyvenv-post-activate . eglot)
   :init
@@ -222,7 +309,30 @@
 
 
 ;; Fun packages
-(use-package elfeed)
+;; RSS feed reader
+(use-package elfeed
+  :config ;; Doing this here because my config scripts don't pull in custom.el
+  (setq elfeed-feeds '("https://eli.thegreenplace.net/feeds/all.atom.xml"
+                       "https://datakinds.github.io/feed.xml"
+                       "https://www.ecosophia.net/feed/"
+                       "https://xkcd.com/rss.xml"
+                       "https://www.webtoons.com/en/comedy/safely-endangered/rss?title_no=352"
+                       "https://pluralistic.net/feed/"
+                       "https://craphound.com/feed"
+                       "https://rocknerd.co.uk/feed/"
+                       "https://davidgerard.co.uk/blockchain/feed/"
+                       "https://devurandom.xyz/blog/main.rss"
+                       "https://toaqlanguage.wordpress.com/feed"
+                       "https://writings.stephenwolfram.com/feed/"
+                       "https://johnwhiles.com/atom.xml"
+                       "https://fasterthanli.me/index.xml"
+                       "https://verdagon.dev/rss.xml"
+                       "https://kseo.github.io/rss.xml"
+                       "https://acko.net/atom.xml"
+                       "https://ziglang.org/news/index.xml"
+                       "https://www.greaterwrong.com/users/eliezer_yudkowsky?show=posts&format=rss"
+                       "https://www.greaterwrong.com/users/scottalexander?show=posts&format=rss"
+                       "https://nim-lang.org/feed.xml")))
 
 ;; Forward all M-x customize-* configuration to custom.el
 (setq custom-file "~/.emacs.d/custom.el")
@@ -239,3 +349,5 @@
   :lighter " raven")
 (put 'scroll-left 'disabled nil)
 (put 'downcase-region 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
+(put 'magit-edit-line-commit 'disabled nil)
