@@ -74,6 +74,9 @@ bindsym $mod+t exec ~/.config/rofi/linku/rofi.sh
 bindsym XF86MonBrightnessUp exec --no-startup-id brightnessctl set 1%+
 bindsym XF86MonBrightnessDown exec --no-startup-id brightnessctl set 1%-
 
+# floating windows should always be on the current workspace
+for_window [floating] sticky enable
+
 # change focus
 bindsym $mod+j focus left
 bindsym $mod+k focus down

@@ -20,5 +20,11 @@
 (defalias 'dk/duplicate-line
    (kmacro "C-a C-u 1 C-k C-y C-y"))
 
+(defun pyeglot ()
+  "Opens a venv then eglot in order."
+  (interactive)
+  (call-interactively 'pyvenv-activate)
+  (call-interactively 'eglot))
+
 (provide 'datakinds)
 ;;; datakinds.el ends here

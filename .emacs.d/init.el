@@ -1,7 +1,22 @@
-;; Enable package.el and configure MELPA
-(require 'package)
+;; Install Straight, disable package.el
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name
+        "straight/repos/straight.el/bootstrap.el"
+        (or (bound-and-true-p straight-base-dir)
+            user-emacs-directory)))
+      (bootstrap-version 7))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+(setq package-enable-at-startup nil)
+
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
-(package-initialize)
 
 ;; Add custom ELisp init script directory to load path
 (add-to-list 'load-path "~/.emacs.d/elisp/")
@@ -15,10 +30,20 @@
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
 ;; Show the tab bar if more than one tab exists
-(setq tab-bar-show 1)
-
+(setq
+ tab-bar-show 1
 ;; Fast scrolling
-(setq fast-but-imprecise-scrolling t)
+ fast-but-imprecise-scrolling t
+;; Debug on freeze!
+;; To debug emacs, run `kill -SIGUSR2 <emacs PID>`
+ debug-on-event 'sigusr2
+ completion-cycle-threshold 1
+ tab-always-indent 'complete
+ jit-lock-defer-time 0.25
+ ;; Tune the GC to be a little less aggressive & use more memory
+ gc-cons-threshold 64000000 ;; 64mb from 8mb default
+ gc-cons-percentage 0.4 ;; from 0.1
+ )
 
 ;; Hide the toolbar
 (tool-bar-mode 0)
@@ -29,10 +54,6 @@
   (define-key dired-mode-map ";" 'dired-subtree-remove)
   (all-the-icons-dired-mode)
   (require 'dired-x)) ;; For omit mode!
-
-;; Debug on freeze!
-;; To debug emacs, run `kill -SIGUSR2 <emacs PID>`
-(setq debug-on-event 'sigusr2)
 
 ;; Enable horizontal scrolling using the mouse
 (global-set-key (kbd "<mouse-6>") (lambda () (interactive)
@@ -64,31 +85,27 @@
 (global-set-key (kbd "C-S-b") 'ivy-switch-buffer)
 (global-set-key (kbd "C-x x r") 'rename-visited-file)
 
-
 ;; Install use-package if it's missing
-(if (not (package-installed-p 'use-package))
-  (progn
-    (package-refresh-contents)
-    (package-install 'use-package)))
+(straight-use-package 'use-package)
 (require 'use-package-ensure)
-(setq use-package-always-ensure t)
-(setq use-package-always-demand (daemonp))
+(setq use-package-always-ensure t
+      use-package-always-demand (daemonp)
+      straight-use-package-by-default t)
 
 ;; Enable packages!
 ;; Everything that comes with emacs
 (use-package emacs
   :init
-  (setq completion-cycle-threshold 1)
   (electric-pair-mode)
-  (setq tab-always-indent 'complete)
-  (pixel-scroll-precision-mode)
-  (setq jit-lock-defer-time 0.25))
+  (pixel-scroll-precision-mode))
+(use-package org-contrib)
 (use-package org
   :bind
   (:map org-mode-map
-        ("C-c C-M-l" . org-store-link)))
-(use-package org)
-
+        ("C-c C-M-l" . org-store-link))
+  :config
+  (add-to-list 'org-modules 'org-wikinodes)
+  (setq org-wikinodes-scope 'directory))
 ;; Theming and graphical packages
 (use-package solarized-theme ;; Pretty colors
   :config
@@ -279,7 +296,7 @@
         ("S-TAB" . corfu-previous)
         ([backtab] . corfu-previous))
   :init
-  (global-corfu-mode))
+  (global-corfu-mode 1))
 (use-package cape
   :init
   (add-to-list 'completion-at-point-functions #'cape-dabbrev)
