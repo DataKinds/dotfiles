@@ -6,6 +6,7 @@ alias cm='chezmoi'
 
 # configure NNN to always open in a new terminal
 NNN_PLUG='t:!|tree -a;'
+NNN_PLUG+='d:!|chezmoi diff;'
 NNN_PLUG+='a:!chezmoi add "$nnn" && echo "added $nnn to chezmoi";'
 NNN_PLUG+='p:!chezmoi apply && echo "applied chezmoi changes. full managed file list:" && chezmoi managed;'
 export NNN_PLUG
