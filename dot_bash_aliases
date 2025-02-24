@@ -2,8 +2,14 @@ alias aget='sudo apt install'
 alias afind='apt-cache search'
 alias cat='batcat'
 alias al='hx ~/.bash_aliases'
+alias cm='chezmoi'
 
 # configure NNN to always open in a new terminal
+NNN_PLUG='t:!|tree -a;'
+NNN_PLUG+='a:!chezmoi add "$nnn" && echo "added $nnn to chezmoi";'
+NNN_PLUG+='p:!chezmoi apply && echo "applied chezmoi changes. full managed file list:" && chezmoi managed;'
+export NNN_PLUG
+export NNN_SEL="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.selection"
 alias nnn='VISUAL="/home/a/bin/detached_hx.sh" nnn'
 
 # some more ls aliases
